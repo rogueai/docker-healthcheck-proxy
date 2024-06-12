@@ -1,0 +1,34 @@
+services:
+  main:
+    image: busybox
+    depends_on:
+      healthcheck-proxy:
+        condition: service_healthy
+
+  healthcheck-proxy:
+    build:
+      context: ..
+      dockerfile: ../Dockerfile
+    healthcheck:
+      test: curl -f "http://localhost:3333/healthcheck"
+#    security_opt:
+#      - apparmor=unconfined
+#    cap_add:
+#      - SYS_PTRACE
+#    ports:
+#      - 40000:40000
+    depends_on:
+      - healthcheck-proxy-sp
+    environment:
+      - DOCKER_HOST=tcp://healthcheck-proxy-sp:2375
+    labels:
+      - healthcheck.depends-on=test
+
+  healthcheck-proxy-sp:
+    image: ghcr.io/tecnativa/docker-socket-proxy:latest
+    environment:
+      - CONTAINERS=1 # Allow access to viewing containers
+      - POST=0 # Disallow any POST operations (effectively read-only)
+    volumes:
+      - /run/user/1000/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped

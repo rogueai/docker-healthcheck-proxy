@@ -1,0 +1,9 @@
+services:
+  test:
+    image: busybox
+#    stdin_open: true
+#    tty: true
+    healthcheck:
+      test: "true"
+    labels:
+      - healthcheck.enable=true

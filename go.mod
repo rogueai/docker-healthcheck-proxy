@@ -1,4 +1,5 @@
-module github.com/mala-cimbra/docker-healthcheck-proxy
+module github.com/rogueai/docker-healthcheck-proxy
+
 go 1.22
 
 require github.com/docker/docker v26.1.4+incompatible

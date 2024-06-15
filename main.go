@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/mala-cimbra/docker-healthcheck-proxy/healthcheck"
+	"github.com/rogueai/docker-healthcheck-proxy/healthcheck"
 )
 
 var listenPort string = ":3333"

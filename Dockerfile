@@ -1,15 +1,19 @@
 # Compile stage
-FROM golang:1.22 AS build
+FROM golang:1 AS build
 
-ADD . /build
-WORKDIR /build
+WORKDIR /go/src/
+COPY . .
+RUN go mod vendor
+RUN go install golang.org/x/tools/cmd/goimports@latest
+RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.52.2
 
-RUN go build -o /healthcheck
+RUN make
+
 
 # Final stage
-FROM golang:1.22
+FROM alpine:3
 
-WORKDIR /
-COPY --from=build /healthcheck /
+WORKDIR /app
+COPY --from=build /go/src/target/healthcheck /app
 
-ENTRYPOINT ["/healthcheck"]
+ENTRYPOINT ["/app/healthcheck"]
